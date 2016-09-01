@@ -1,0 +1,37 @@
+#In this experiment we want data for three oracles sizes in the datasets and we step each 1% of the total number of configurations in the training set.
+echo "Oracle;PerformanceMetric;Dataset;#Configurations;max(fpr);%.max(fpr);min(fpr);%.min(fpr);mean(fpr);%0.8-fpr;%0.5-fpr;%0.2-fpr;max(fnr);%.max(fnr);min(fnr);%.min(fnr);mean(fnr);%0.8-fnr;%0.5-fnr;%0.2-fnr;max(precision);%.max(precision);min(precision);%.min(precision);mean(precision);%0.8-precision;%0.5-precision;%0.2-precision;max(recall);%.max(recall);min(recall);%.min(recall);mean(recall);%0.8-recall;%0.5-recall;%0.2-recall;max(simplicity);%.max(simplicity);min(simplicity);%.min(simplicity);mean(simplicity);%0.8-simplicity;%0.5-simplicity;%0.2-simplicity;max(paulmetric);%.max(paulmetric);min(paulmetric);%.min(paulmetric);mean(paulmetric);%0.8-paulmetric;%0.5-paulmetric;%0.2-paulmetric;max(accuracy);%.max(accuracy);min(accuracy);%.min(accuracy);mean(accuracy);%0.8-accuracy;%0.5-accuracy;%0.2-accuracy;"
+
+for f in ../datasets/*.csv
+do
+	a=($(wc $f))
+	lines=${a[0]}
+	if [ $(basename $f) == x264.csv ]
+	then 
+		for perf in Watt Energy SSIM PSNR Speed Size Time
+		do
+			for oracle in 0.2 0.5 0.8
+			do
+ 				echo -n "$oracle;$perf;$(echo $(basename $f) | cut -f 1 -d '.');$lines;";Rscript ./helpers/2.calculateMetrics.R ./data/$oracle-$perf-$(basename $f) $lines
+			done
+		done
+		wait
+	elif [ $(basename $f) == SaC.csv ]
+	then
+		for perf in maxoptcyc maxlur maxwlur maxprfur maxae initmheap initwheap compile-exit compile-real compile-user compile-ioin compile-ioout compile-maxmem compile-cpu compile-size run-exit run-real run-user run-maxmem run-cpu
+                do
+                        for oracle in 0.2 0.5 0.8
+                        do      
+                                echo -n "$oracle;$perf;$(echo $(basename $f) | cut -f 1 -d '.');$lines;";Rscript ./helpers/2.calculateMetrics.R ./data/$oracle-$perf-$(basename $f) $lines
+
+			done
+			wait
+                done
+	else
+	        for oracle in 0.2 0.5 0.8
+                do
+                                echo -n "$oracle;perf;$(echo $(basename $f) | cut -f 1 -d '.');$lines;";Rscript ./helpers/2.calculateMetrics.R ./data/$oracle-$(basename $f) $lines
+                done
+		wait
+        fi
+done
+wait
