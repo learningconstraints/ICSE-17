@@ -8,7 +8,7 @@ To generate the data that is later exploited by our classification algorithm we 
 
 The syntax for this script is depicted above:
 
-Syntax: ./sensitivity.py <dataset> <perf> (<thresh>) <srm> <srM> <srs> <dest>
+Syntax: ./sensitivity.py dataset perf (thresh) srm srM srs dest
 -  dataset     path to the studied system's dataset
 -  perf        name of the studied performance ("perf" in most cases,
                exceptions being x264 and SaC)
